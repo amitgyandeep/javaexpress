@@ -1,0 +1,5 @@
+<xs:schema xmlns="http://www.loginets.com/schema"
+	targetNamespace="http://www.mkyong.com/schema" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+
+</xs:schema>

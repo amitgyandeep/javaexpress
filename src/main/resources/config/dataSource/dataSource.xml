@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+	
+	<bean id="dataSource"
+        class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/coffeeshopapp?autoReconnect=true" />
+        <property name="username" value="root" />
+        <property name="password" value="javaexpress" />
+    </bean> 
+ 	
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="annotatedClasses">
+			<list>
+				<value>com.keyfalcon.coffeeshopapp.model.User</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.current_session_context_class">thread</prop>
+
+				<prop key="hibernate.max_fetch_depth">5</prop>
+
+				<prop key="hibernate.dbcp.initialSize">25</prop>   <!-- default value is 10 -->
+				<prop key="hibernate.dbcp.maxActive">500</prop>    <!-- default value is 100 -->
+				<prop key="hibernate.dbcp.maxIdle">500</prop>      <!-- default value is 100 -->
+				<prop key="hibernate.dbcp.minIdle">0</prop>        <!-- default value is 10 -->
+				<prop key="hibernate.dbcp.maxWait">60000</prop>  <!-- default value is 30000 -->
+
+				<prop key="hibernate.connection.pool_size">1000</prop>
+
+				<prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory
+				</prop>
+				<!-- <prop key="hibernate.transaction.factory_class"> org.hibernate.transaction.JTATransactionFactory 
+					</prop> -->
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	
+	<!-- <bean  class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="jsonMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+     
+    Configure bean to convert JSON to POJO and vice versa
+    <bean id="jsonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/> -->
+	
+	<!--  <tx:annotation-driven transaction-manager="transactionManager" /> -->
+ 
+    <!-- Creating TransactionManager Bean, since JDBC we are creating of type 
+        DataSourceTransactionManager -->
+    <!-- <bean id="transactionManager"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean> -->
+    
+     <!-- <bean id="jsonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/> -->
+     
+     <!-- Configure to plugin JSON as request and response in method handler -->
+    <!-- <bean  class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="jsonMessageConverter"/>
+            </list>
+        </property>
+    </bean> -->
+    
+	 <bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+    <property name="transactionManager" ref="transactionManager"/>
+  </bean>
+</beans>
